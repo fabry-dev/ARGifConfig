@@ -6,7 +6,7 @@
 
 
 
-#define PATH_DEFAULT "/home/fred/Dropbox/Taf/Cassiopee/footregister/files/"
+#define PATH_DEFAULT "/home/fred/Dropbox/Taf/Cassiopee/miskRegister/files/"
 
 
 
@@ -44,14 +44,23 @@ void MainWindow::initDb()
     const QString DRIVER("QSQLITE");
     QSqlDatabase db = QSqlDatabase::addDatabase(DRIVER);
     db.setHostName("hostname");
-    db.setDatabaseName(PATH+"footdb");
-    db.setUserName("footuser");
-    db.setPassword("footpassword");
+    db.setDatabaseName(PATH+"miskdb");
+    db.setUserName("user");
+    db.setPassword("password");
 
     if(!db.open())
         qWarning() << "ERROR: " << db.lastError();
 
+    qDebug()<<db.tables();
+
+    //qDebug()<<db.record("players");
+    //dropTable();
+    //createTable();
+
+
+
 }
+
 
 
 
@@ -91,21 +100,20 @@ void MainWindow::getPlayers()
 {
     qDebug()<<"get";
     QSqlQuery query;
-    query.prepare("SELECT id,name,email,score1,score2,score3,scoreTotal,date FROM players");
+    query.prepare("SELECT id,name,email,phone,achievement,date FROM players");
     query.exec();
 
     while (query.next()) {
         int id = query.value(0).toInt();
         QString name = query.value(1).toString();
         QString email = query.value(2).toString();
-        int score1 = query.value(3).toInt();
-        int score2 = query.value(4).toInt();
-        int score3 = query.value(5).toInt();
-        int scoreTotal = query.value(6).toInt();
-        QDateTime date = query.value(7).toDateTime();
-        qDebug()<<id<<name<<email<<score1<<score2<<score3<<scoreTotal<<date;
+        QString phone = query.value(3).toString();
+        QString achievement = query.value(4).toString();
+        QDateTime date = query.value(5).toDateTime();
+        qDebug()<<id<<name<<email<<phone<<achievement<<date;
     }
 }
+
 
 
 
@@ -124,31 +132,30 @@ void MainWindow::exportData()
     qDebug()<<"Export data between: "<<date1<<"and"<<date2;
 
 
-    query.prepare("SELECT id,name,email,score1,score2,score3,scoreTotal,date FROM players WHERE date between :DATE1 and :DATE2");
+    query.prepare("SELECT id,name,email,phone,achievement,date FROM players WHERE date between :DATE1 and :DATE2");
     query.bindValue(":DATE1", QVariant(date1));
     query.bindValue(":DATE2", QVariant(date2));
     query.exec();
 
 
-    QString filename=PATH+"data.txt";
+    QString filename=PATH+"data.csv";
     QFile file( filename );
-    if ( file.open(QIODevice::ReadWrite) )
+    if ( file.open(QIODevice::WriteOnly) )
     {
         QTextStream stream( &file );
 
 
-
+        stream <<"user id"<<","<<"name"<<","<<"email"<<","<<"phone number"<<","<<"achievement"<<","<<"registration date"<<endl;
         while (query.next()) {
             int id = query.value(0).toInt();
             QString name = query.value(1).toString();
-            QString email = query.value(2).toString();
-            int score1 = query.value(3).toInt();
-            int score2 = query.value(4).toInt();
-            int score3 = query.value(5).toInt();
-            int scoreTotal = query.value(6).toInt();
-            QDateTime date = (query.value(7).toDateTime());
-            qDebug()<<id<<name<<email<<score1<<score2<<score3<<scoreTotal<<date.toString("yyyy-MM-dd hh:mm:ss");
-            stream <<id<<";"<<name<<";"<<email<<";"<<score1<<";"<<score2<<";"<<score3<<";"<<scoreTotal<<";"<<date.toString("yyyy-MM-dd hh:mm:ss")<<endl;
+            QString email =  query.value(2).toString();
+            QString phone = query.value(3).toString();
+            QString achievement = query.value(4).toString();
+            QDateTime date = query.value(5).toDateTime();
+
+            qDebug()<<id<<name<<email<<phone<<achievement<<date.toString("yyyy-MM-dd hh:mm:ss");
+            stream <<id<<","<<name<<","<<email<<","<<phone<<","<<achievement<<","<<date.toString("yyyy-MM-dd hh:mm:ss")<<endl;
         }
     }
 }
