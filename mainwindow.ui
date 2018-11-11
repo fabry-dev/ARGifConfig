@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Export Scores</string>
+     <string>Export Data</string>
     </property>
    </widget>
    <widget class="QDateTimeEdit" name="exportDateFrom">
@@ -119,7 +119,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Erase scores</string>
+     <string>Erase data</string>
     </property>
    </widget>
    <widget class="QDateTimeEdit" name="eraseDateTo">
@@ -139,7 +139,7 @@
      <x>0</x>
      <y>0</y>
      <width>493</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
