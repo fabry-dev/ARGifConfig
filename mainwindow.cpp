@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->exportDateTo->setDateTime(QDateTime::currentDateTime());
 
     initDb();
-    getPlayers();
+ //   getPlayers();
 }
 
 
